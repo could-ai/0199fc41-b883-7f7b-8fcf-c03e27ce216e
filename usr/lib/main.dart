@@ -7,114 +7,197 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Halaman Ulasan Produk',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+        useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const ReviewPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+// Model data untuk sebuah ulasan
+class Review {
+  final String author;
+  final String reviewText;
+  final double rating;
+  final DateTime date;
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  Review({
+    required this.author,
+    required this.reviewText,
+    required this.rating,
+    required this.date,
+  });
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class ReviewPage extends StatefulWidget {
+  const ReviewPage({super.key});
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  @override
+  State<ReviewPage> createState() => _ReviewPageState();
+}
+
+class _ReviewPageState extends State<ReviewPage> {
+  // Data ulasan dummy
+  final List<Review> _reviews = [
+    Review(
+      author: 'Budi Santoso',
+      reviewText: 'Produk ini luar biasa! Kualitasnya melebihi ekspektasi saya. Sangat direkomendasikan untuk semua orang.',
+      rating: 5.0,
+      date: DateTime(2024, 7, 20),
+    ),
+    Review(
+      author: 'Citra Lestari',
+      reviewText: 'Cukup bagus, tapi pengirimannya agak lambat. Secara keseluruhan, produknya berfungsi dengan baik.',
+      rating: 4.0,
+      date: DateTime(2024, 7, 19),
+    ),
+    Review(
+      author: 'Agus Wijaya',
+      reviewText: 'Saya sedikit kecewa dengan daya tahan baterainya. Perlu diisi ulang lebih sering dari yang saya kira.',
+      rating: 3.0,
+      date: DateTime(2024, 7, 18),
+    ),
+    Review(
+      author: 'Dewi Anggraini',
+      reviewText: 'Sangat mudah digunakan dan desainnya elegan. Suka sekali dengan warnanya!',
+      rating: 4.5,
+      date: DateTime(2024, 7, 17),
+    ),
+  ];
+
+  void _addReview() {
+    // Logika untuk menambah ulasan baru bisa ditambahkan di sini
+    // Misalnya, menampilkan dialog atau halaman baru
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Fungsi tambah ulasan belum diimplementasikan.')),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
+        title: const Text('Ulasan Pengguna'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: ListView.builder(
+        padding: const EdgeInsets.all(8.0),
+        itemCount: _reviews.length,
+        itemBuilder: (context, index) {
+          final review = _reviews[index];
+          return ReviewListItem(review: review);
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addReview,
+        tooltip: 'Tambah Ulasan',
+        child: const Icon(Icons.add_comment),
+      ),
+    );
+  }
+}
+
+class ReviewListItem extends StatelessWidget {
+  final Review review;
+
+  const ReviewListItem({super.key, required this.review});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text('$_counter', style: Theme.of(context).textTheme.headlineMedium),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  child: Text(review.author[0]), // Inisial dari nama penulis
+                ),
+                const SizedBox(width: 12.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        review.author,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        '${review.date.day}/${review.date.month}/${review.date.year}',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                StarRating(rating: review.rating),
+              ],
+            ),
+            const SizedBox(height: 12.0),
+            Text(
+              review.reviewText,
+              style: const TextStyle(fontSize: 14),
+            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class StarRating extends StatelessWidget {
+  final double rating;
+  final int starCount;
+  final Color color;
+
+  const StarRating({
+    super.key,
+    this.rating = 0.0,
+    this.starCount = 5,
+    this.color = Colors.amber,
+  });
+
+  Widget buildStar(BuildContext context, int index) {
+    Icon icon;
+    if (index >= rating) {
+      icon = Icon(
+        Icons.star_border,
+        color: color,
+      );
+    } else if (index > rating - 1 && index < rating) {
+      icon = Icon(
+        Icons.star_half,
+        color: color,
+      );
+    } else {
+      icon = Icon(
+        Icons.star,
+        color: color,
+      );
+    }
+    return icon;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(starCount, (index) => buildStar(context, index)),
     );
   }
 }
